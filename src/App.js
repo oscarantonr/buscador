@@ -1,7 +1,7 @@
 import './App.css';
 import Bar from './components/Bar'
 
-function App() {
+const App = () => {
   return (
     <div className="App">
       <Bar />
