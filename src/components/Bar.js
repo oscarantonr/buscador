@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from 'react'
 import { AppBar, Toolbar, TextField } from '@material-ui/core';
-import { Autocomplete } from '@mui/material'
+import { Autocomplete, Box } from '@mui/material'
 import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios';
 
 export const Bar = props => {
 
     const newStyles = makeStyles({
+        component: {
+            display: 'inline-block',
+            margin: '0 0 3% 0'
+        },
         tool: {
             background: 'red'
         }
@@ -38,13 +42,6 @@ export const Bar = props => {
 
 
     useEffect(() => {
-        // function getFetchUrl() {
-        //     if (query) {
-        //         console.log("HAY QUERY");
-        //         return 'https://restcountries.com/v3.1/region/' + query;
-        //     }
-        // }
-
         async function fetchCountries() {
             let url = 'https://restcountries.com/v3.1/all'
             axios.get(url)
@@ -66,6 +63,7 @@ export const Bar = props => {
         let regionList = [];
         const allContinents = data.map(conti => conti.region);
         const regionNames = allContinents.filter((value, index, self) => self.indexOf(value) === index)
+        regionNames.sort();
 
         for (let i = 0; i < regionNames.length; i++) {
             regionJSON = { "name": regionNames[i], "id": i };
@@ -87,14 +85,17 @@ export const Bar = props => {
                     // const mapCountriesNames = result.data.map(conti => conti.name.common);
                     // const allCountriesNames = mapCountriesNames.filter((value, index, self) => self.indexOf(value) === index);
                     const allCountries = result.data.map(conti => countryJSON = { "label": conti.name.common, "code": conti.cca2 });
+                    const sortedCountries = [...allCountries].sort((a, b) =>
+                        a.label > b.label ? 1 : -1,
+                    );
 
-                    for (let i = 0; i < allCountries.length; i++) {
-                        countryJSON = { "label": allCountries[i].label, "id": i, "code": allCountries[i].code };
+                    for (let i = 0; i < sortedCountries.length; i++) {
+                        countryJSON = { "label": sortedCountries[i].label, "id": i, "code": sortedCountries[i].code };
                         countryList.push(countryJSON);
                     }
 
                     setCountryList(countryList);
-                    setCountry(allCountries);
+                    setCountry(sortedCountries);
 
                     inputCountry(countryList);
                 })
@@ -119,10 +120,12 @@ export const Bar = props => {
         if (continentName) {
             return (
                 <div>
+                    <h3>Enter a continent</h3>
                     <Autocomplete
                         disablePortal
                         id="continent"
                         options={continentName}
+                        className={classes.component}
                         sx={{ width: 300 }}
                         renderInput={(params) => <TextField {...params} label="Continent" />}
                         value={selectedContinent}
@@ -145,21 +148,25 @@ export const Bar = props => {
             return (
                 <div>
                     {isContinent ?
-                        <Autocomplete
-                            disablePortal
-                            id="countries"
-                            sx={{ width: 300 }}
-                            options={countryList}
-                            renderInput={params => (
-                                <TextField {...params} label="Countries" />
-                            )}
-                            // getOptionLabel={option => option.label}
-                            value={selectedCountry}
-                            onChange={(e, selCountry) => {
-                                setSelectedCountry(selCountry ? selCountry.label : null);
-                                handleCountry(selCountry);
-                            }}
-                        />
+                        <>
+                            <h3>Enter a country</h3>
+                            <Autocomplete
+                                disablePortal
+                                id="countries"
+                                sx={{ width: 300 }}
+                                options={countryList}
+                                className={classes.component}
+                                renderInput={params => (
+                                    <TextField {...params} label="Countries" />
+                                )}
+                                // getOptionLabel={option => option.label}
+                                value={selectedCountry}
+                                onChange={(e, selCountry) => {
+                                    setSelectedCountry(selCountry ? selCountry.label : null);
+                                    handleCountry(selCountry);
+                                }}
+                            />
+                        </>
                         :
                         <></>
                     }
@@ -214,6 +221,7 @@ export const Bar = props => {
                 return (
                     <>
                         <div>
+                            <h3>Enter a city</h3>
                             {/* <Autocomplete
                             id="cities"
                             sx={{ width: 300 }}
@@ -233,7 +241,7 @@ export const Bar = props => {
                                 id="cities"
                                 label="Search city"
                                 type="search"
-                                className={classes.textField}
+                                className={classes.component}
                                 value={data}
                                 onChange={(e) => setInputCity(e.target.value)}
                             />
@@ -272,6 +280,7 @@ export const Bar = props => {
         let cityCountry = city + " " + selectedCountry;
         let params = {
             q: cityCountry,
+            //PONER EL TIEMPO DE TODA LA SEMANA 
             aqi: 'no'
         };
         let url = 'http://api.weatherapi.com/v1/forecast.json?key=331a7c07ae6e48b0b1c182302220602'
@@ -287,16 +296,50 @@ export const Bar = props => {
             })
     }
 
+    const inputPrint = () => {
+        if (print) {
+            return (
+                <>
+                    <div>
+                        <h4>{weather}</h4>
+                        <img alt={""} src={logo} />
+                    </div>
+                </>
+            )
+        }
+    }
 
 
     return (
         <>
-            <AppBar position='static' className={classes.tool} >
-            </AppBar>
+            <Box
+                sx={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(3, 1fr)',
+                    gap: 1,
+                    gridTemplateRows: 'auto',
+                    gridTemplateAreas: `". header ."
+        ". main ."
+        ". sidebar ."
+        ". footer ."`,
+                }}
+            >
+                {/* <Box sx={{ gridArea: 'header', bgcolor: 'primary.main' }}>{comboBox()}</Box> */}
+                {/* <Box sx={{ gridArea: 'main', bgcolor: 'secondary.main' }}>{{ isContinent } ? inputCountry({ countryName }) : <></>}</Box> */}
+                {/* <Box sx={{ gridArea: 'sidebar', bgcolor: 'error.main' }}>{{ isCountry } ? inputCity({ cityName }) : <></>}</Box> */}
+                {/* <Box sx={{ gridArea: 'footer', bgcolor: 'warning.dark' }}>{{ print } ? inputPrint() : <></>}</Box> */}
+
+                {/* <AppBar position='static' className={classes.tool} > */}
+                {/* </AppBar> */}
+                {/* {comboBox()}
+            {{ isContinent } ? inputCountry({ countryName }) : <></>}
+            {{ isCountry } ? inputCity({ cityName }) : <></>}
+            {{ print } ? <div>{weather} <img alt="" src={logo} /></div> : <></>} */}
+            </Box>
             {comboBox()}
             {{ isContinent } ? inputCountry({ countryName }) : <></>}
             {{ isCountry } ? inputCity({ cityName }) : <></>}
-            {{ print } ? <div>{weather} <img alt="" src={logo} /></div> : <></>}
+            {{ print } ? inputPrint() : <></>}
         </>
     )
 }
