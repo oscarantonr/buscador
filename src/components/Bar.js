@@ -283,7 +283,7 @@ export const Bar = props => {
             //PONER EL TIEMPO DE TODA LA SEMANA 
             aqi: 'no'
         };
-        let url = 'http://api.weatherapi.com/v1/forecast.json?key=331a7c07ae6e48b0b1c182302220602'
+        let url = 'https://api.weatherapi.com/v1/forecast.json?key=331a7c07ae6e48b0b1c182302220602'
         axios.get(url, { params })
             .then(result => {
                 const data = result.data.forecast.forecastday[0];
