@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { AppBar, Toolbar, TextField } from '@material-ui/core';
+import { TextField } from '@material-ui/core';
 import { Autocomplete, Box } from '@mui/material'
 import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios';
@@ -19,11 +19,11 @@ export const Bar = props => {
     const classes = newStyles();
 
     const [continentName, setContinentName] = useState('');
-    const [region, setRegion] = useState([]);
+    // const [region, setRegion] = useState([]);
     const [selectedContinent, setSelectedContinent] = useState(null);
     const [selectedCountry, setSelectedCountry] = useState(null);
 
-    const [query, setQuery] = useState('');
+    // const [query, setQuery] = useState('');
     const [countryList, setCountryList] = useState([])
     const [countryName, setCountry] = useState([]);
 
@@ -32,7 +32,7 @@ export const Bar = props => {
 
     const [cityList, setCityList] = useState([]);
     const [cityName, setCity] = useState([]);
-    const [selectedCity, setSelectedCity] = useState(null);
+    // const [selectedCity, setSelectedCity] = useState(null);
 
     const [data, setData] = useState('');
     const [print, setPrint] = useState(false);
@@ -56,7 +56,7 @@ export const Bar = props => {
         // }
         fetchCountries();
         // fetchData();
-    }, [query]);
+    }, []);
 
     const callContinent = (data) => {
         let regionJSON = { name: '', id: '' };
@@ -71,7 +71,7 @@ export const Bar = props => {
         }
 
         setContinentName(regionNames);
-        setRegion(regionList)
+        // setRegion(regionList)
     }
 
     const callContinentFinal = (region) => {
@@ -106,7 +106,7 @@ export const Bar = props => {
             setCountryList([]);
             setCityList([]);
             setSelectedCountry(null);
-            setSelectedCity(null);
+            // setSelectedCity(null);
             setPrint(false);
             setWeather(null);
             setLogo(null);
@@ -207,7 +207,7 @@ export const Bar = props => {
         } else {
             setIsCountry(false);
             setCityList([]);
-            setSelectedCity(null)
+            // setSelectedCity(null)
             setPrint(false);
             setData('');
             setWeather(null);
